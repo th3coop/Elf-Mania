@@ -5,7 +5,7 @@ import numpy
 
 class GameObject:
 
-    def __init__(self, x, y, img_path):
+    def __init__(self, x, y, img_path, game_clock, game):
         self.img_path = img_path
         self.width = 187 # dynamically obtain these two
         self.height = 466
@@ -14,9 +14,12 @@ class GameObject:
         self.sprite = self.load_sprite()
         self.btm_buffer = (20 + self.height)
         self.right_buffer = (20 + self.width)
+        self.pos = self.sprite.get_rect().move(0,100)
         self.pre_offset_pos = (x,y)
         self.x_pos = 100
         self.y_pos = 100 #max(y, self.btm_buffer)
+        self.clock = game_clock
+        self.game = game
 
     def load_sprite(self):
         # Create play sprite
@@ -30,26 +33,29 @@ class GameObject:
 class PlayerCharacter(GameObject):
     SPEED = 10
 
-    def __init__(self, x, y, img_path=None):
+    def __init__(self, x, y, game_clock, game, img_path=None):
         self.sprite_width = 31
         self.sprite_height = 31
         self.top_padding = -9
+        self.jumping = False
+        self.breathing = True
         if img_path == None:
             img_path = os.path.join("animations","ELF ANIMATIONS.png")
-        super().__init__(x, y, img_path)
+        super().__init__(x, y, img_path, game_clock, game)
         
         #These offsets shift the character image to position desired animation
         # step into the current position of the character.  Imagine you're shifting
         # a larger page with many small images on it to only show the desired image.
         self.breath_idx = 0
-        self.breath_offset = [(0, self.top_padding),
+        self.breath_offsets = [(0, self.top_padding),
             (-(self.sprite_width * 1), self.top_padding),
             (-(self.sprite_width * 2), self.top_padding),
             (-(self.sprite_width * 3), self.top_padding),
             ] # (x, -18)
+        self.position_animation(self.breath_offsets[self.breath_idx])
         
         self.jump_idx = 0
-        self.jump_offset = [(0, self.top_padding - (self.sprite_height)),
+        self.jump_offsets = [(0, self.top_padding - (self.sprite_height)),
             (-(self.sprite_width * 1), self.top_padding - (self.sprite_height)),
             (-(self.sprite_width * 2), self.top_padding - (self.sprite_height)),
             (-(self.sprite_width * 3), self.top_padding - (self.sprite_height)),
@@ -58,7 +64,6 @@ class PlayerCharacter(GameObject):
             (-(self.sprite_width * 2), self.top_padding - (self.sprite_height* 2)),
             (-(self.sprite_width * 3), self.top_padding - (self.sprite_height* 2)),
             ] # (x, -18)
-        self.position_animation(self.breath_offset[self.breath_idx])
 
     # This function will handle any play state changes that need to occur before 
     #  the playert animation changes.
@@ -66,30 +71,47 @@ class PlayerCharacter(GameObject):
         self.breathing = False
 
     # This function should be called when a particular animation cycle has completed
-    def reset_animation(self, ):
+    def reset_breathing_animation(self, ):
         self.breathing = True
 
-    # this function will run indefinitely until pause by calling break_for_animation
+    def move(self, direction, speed):
+        pass
+
     def breath(self, ):
         # assumes character as already been positioned in idx 0 in __init__.
         #  Perhaps not good coupling of the two functions.
-        while self.breathing:
-            self.breath_idx += 1
-            if self.breath_idx == len(self.breath_offset):
-                self.breath_idx = 0
-            self.position_animation(self.breath_offset[self.breath_idx])
+        self.breath_idx += 1
+        if self.breath_idx == len(self.breath_offsets):
+            self.breath_idx = 0
+        self.position_animation(self.breath_offsets[self.breath_idx])
+        self.game.pygame.time.delay(100)
 
     def jump(self,):
         # assumes character as already been positioned in idx 0 in __init__.
         #  Perhaps not good coupling of the two functions.
         self.break_for_animation()
-        for i in range(len(0, (self.jump_offset) - 1)):
-            self.position_animation(self.jump_offset[i])
-        self.reset_animation()
+        self.jumping = True
+        if self.jump_idx == len(self.jump_offsets):
+            self.jumping = False
+            self.jump_idx = 0
+            self.reset_breathing_animation()
+        self.position_animation(self.jump_offsets[self.jump_idx])
+        self.jump_idx += 1
+        self.game.pygame.time.delay(100)
+
+        # print("self.y_pos: %s" %self.y_pos)
+        # print("self.jump_idx: %s" %self.jump_idx)
+
+    def _run_animation(self, offset_array):
+         for i in range(0, len(offset_array)):
+            print("i: %s", i)
+            self.clock.tick(1)
+            self.position_animation(offset_array[i])
 
     # offset is a tuple to shift animation image.  Generally should coincide with proper
     # animation position
     def position_animation(self, offset):
+        # print("positioning")
         res = numpy.add(self.pre_offset_pos,  numpy.multiply(offset, self.scale))
         self.x_pos = res[0]
         self.y_pos = res[1]

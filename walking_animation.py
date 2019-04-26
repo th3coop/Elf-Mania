@@ -8,8 +8,8 @@ import random
 import os
 
 # Window Options
-SCREEN_WIDTH = 50
-SCREEN_HEIGHT = 50
+SCREEN_WIDTH = 400
+SCREEN_HEIGHT = 400
 SCREEN_TITLE = "CROSSY RPG"
 
 # Color vars, RGB
@@ -35,7 +35,7 @@ class Game:
         self.height = height
         self.pygame = pygame
         self.player = gameObjects.PlayerCharacter(
-            0, 0, clock, self)
+            200, 200, clock, self)
         # Screen game screen
         self.game_screen = pygame.display.set_mode(
             (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -70,7 +70,11 @@ class Game:
         direction = 0
         
         while not self.is_game_over:
-            self.player.breath()  
+            if self.player.breathing:
+                self.player.breath()
+
+            if self.player.jumping == True:
+                self.player.jump()
             # Create the event loop
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
