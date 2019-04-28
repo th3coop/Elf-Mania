@@ -75,6 +75,8 @@ class PlayerCharacter(GameObject):
         self.breathing = True
 
     def load_jump_animation(self, ):
+        self.jump_sound = pygame.mixer.Sound(os.path.join(
+            'sounds', 'Retro_8-Bit_Game-Jump_Lift_TakeOff_06.wav'))
         self.jump_idx = 0
         self.jumping = False
         self.jump_images = self.scale_images(
@@ -103,6 +105,7 @@ class PlayerCharacter(GameObject):
         # assumes character as already been positioned in idx 0 in __init__.
         #  Perhaps not good coupling of the two functions.
         if not self.jumping:
+            self.jump_sound.play()
             self.break_for_animation()
         self.jumping = True
         try:

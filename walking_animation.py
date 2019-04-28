@@ -33,6 +33,8 @@ class Game:
         #  This set_mode must happen before anything graphical happens
         self.game_screen = pygame.display.set_mode(
             (SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.theme_song = pygame.mixer.Sound(os.path.join(
+            'sounds', '8bit Stage1 Intro.wav'))
         self.title = title
         self.width = width
         # Screen game screen
@@ -67,7 +69,7 @@ class Game:
 
     def run_game_loop(self):
         direction = 0
-
+        self.theme_song.play(loops=-1, fade_ms=100)
         while not self.is_game_over:
             if self.player.breathing:
                 self.player.breath()
