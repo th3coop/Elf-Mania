@@ -12,8 +12,8 @@ Pygame playground pour moi, et toi.
 ## Run
 
 - clone this repo
-- in the repe, `virtualenv env`
+- in the repe, `virtualenv env` # note that autoenv will try to start a non existant env...
 - `cd .. && cd [repo-name]` # This activates the virtual env or just `source env/bin/activate` in the repo
-- `pip install`
-- `python walk_animation.py`
+- `pip install -r requirements.txt`
+- `python walking_animation.py`
 
