@@ -13,13 +13,17 @@ Pygame playground pour moi, et toi.
 
 - clone this repo
 - in the repe, `virtualenv env` # note that autoenv will try to start a non existant env...
+
 *MAC*
  - `cd .. && cd [repo-name]` # This activates the virtual env or just `source env/bin/activate` in the repo
+ 
 *Windows*
  - `env\bin\activate.bat` #activates the virtual env
 - confirm that the virtual env activated by making sure it's using `pip` from your `env` folder
+
 *MAC*
  - `which pip`
+ 
 *Windows*
  - `where pip`
 - if it's not using it...well, i'm not sure why the activation step wouldn't have worked for you but...get digging.  Feel free to let me know if you found an issue and i'll update this for the usecase you hit.
