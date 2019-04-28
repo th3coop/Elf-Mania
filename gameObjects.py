@@ -1,6 +1,7 @@
 import pygame
 import os
 import numpy
+from animation import Animation, StopIteration
 from spritesheet import Spritesheet
 
 
@@ -53,53 +54,32 @@ class PlayerCharacter(GameObject):
         # These are specific to ELF ANIMATION.PNG
         self.sprite_width = 31
         self.sprite_height = 31
-        self.top_padding = 4.5
         # top_padding apparent gap at top of file that is uneven with gaps between rows of images
         # I could be setting sprite_[width/height] wrong but those should be even you'd think
+        self.top_padding = 4.5
+        # rect is the pygame.Rect dimension of individual sprites in your spritesheet
+        #  defaults to top left corner of sheet
+        self.rect = (0, 0, self.sprite_width, self.sprite_height)
 
         self.load_breathing_animation()
         self.load_jump_animation()
 
     def load_breathing_animation(self, ):
-        self.breath_idx = 0
-        self.breath_offsets = [(0, self.top_padding),
-                               ((self.sprite_width * 1), self.top_padding),
-                               ((self.sprite_width * 2), self.top_padding),
-                               ((self.sprite_width * 3), self.top_padding),
-                               ]  # (x, -18)
-        # convert the offset list to include the width and height to represent a pygame.Rect
-        rects = [(pos[0], pos[1], self.sprite_width, self.sprite_height)
-                 for pos in self.breath_offsets]
         self.breath_images = self.scale_images(
-            self.sheet.get_sprites(rects, pygame.Color("white")))
+            self.sheet.load_strip(self.rect, 0, 1, 4, pygame.Color("white")))
+        self.breath_iter = Animation(self.breath_images).iter(True)
 
-        self.sprite = self.breath_images[self.breath_idx]
+        self.sprite = self.breath_iter.next()
         # Place the sprite in it's starting position
         self.pos = self.sprite.get_rect().move(0, 100)
         self.breathing = True
 
     def load_jump_animation(self, ):
         self.jump_idx = 0
-        self.jump_offsets = [(0, self.top_padding - (self.sprite_height)),
-                             ((self.sprite_width * 1),
-                              self.top_padding - (self.sprite_height)),
-                             ((self.sprite_width * 2),
-                              self.top_padding - (self.sprite_height)),
-                             ((self.sprite_width * 3),
-                              self.top_padding - (self.sprite_height)),
-                             (0, self.top_padding - (self.sprite_height * 2)),
-                             ((self.sprite_width * 1), self.top_padding -
-                              (self.sprite_height * 2)),
-                             ((self.sprite_width * 2), self.top_padding -
-                              (self.sprite_height * 2)),
-                             ((self.sprite_width * 3), self.top_padding -
-                              (self.sprite_height * 2)),
-                             ]  # (x, -18)
         self.jumping = False
-        rects = [(pos[0], pos[1], self.sprite_width, self.sprite_height)
-                 for pos in self.jump_offsets]
         self.jump_images = self.scale_images(
-            self.sheet.get_sprites(rects, pygame.Color("white")))
+            self.sheet.load_strip(self.rect, 1, 2, 4, pygame.Color("white")))
+        self.jump_iter = Animation(self.jump_images).iter()
 
     # This function will handle any play state changes that need to occur before
     #  the playert animation changes.
@@ -109,7 +89,7 @@ class PlayerCharacter(GameObject):
     # This function should be called when a particular animation cycle has completed
     def reset_breathing_animation(self, ):
         self.breathing = True
-        self.sprite = self.breath_images[0]
+        self.sprite = self.breath_iter.next()
 
     def move(self, direction, speed):
         pass
@@ -117,24 +97,19 @@ class PlayerCharacter(GameObject):
     def breath(self, ):
         # assumes character as already been positioned in idx 0 in __init__.
         #  Perhaps not good coupling of the two functions.
-        self.breath_idx += 1
-        if self.breath_idx == len(self.breath_images):
-            self.breath_idx = 0
-        self.sprite = self.breath_images[self.breath_idx]
-        pygame.time.delay(100)
+        self.sprite = self.breath_iter.next()
 
     def jump(self,):
         # assumes character as already been positioned in idx 0 in __init__.
         #  Perhaps not good coupling of the two functions.
-        self.break_for_animation()
+        if not self.jumping:
+            self.break_for_animation()
         self.jumping = True
-        if self.jump_idx == len(self.jump_images):
+        try:
+            self.sprite = self.jump_iter.next()
+        except StopIteration:
             self.jumping = False
-            self.jump_idx = 0
             self.reset_breathing_animation()
-        self.sprite = self.jump_images[self.jump_idx]
-        self.jump_idx += 1
-        pygame.time.delay(100)
 
         # print("self.y_pos: %s" %self.y_pos)
         # print("self.jump_idx: %s" %self.jump_idx)
