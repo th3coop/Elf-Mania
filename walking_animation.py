@@ -30,15 +30,14 @@ class Game:
     did_win = False
 
     def __init__(self, background_img_path, title, width, height):
-        self.title = title
-        self.width = width
-        self.height = height
-        self.pygame = pygame
-        self.player = gameObjects.PlayerCharacter(
-            200, 200, clock, self)
-        # Screen game screen
+        #  This set_mode must happen before anything graphical happens
         self.game_screen = pygame.display.set_mode(
             (SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.title = title
+        self.width = width
+        # Screen game screen
+        self.player = gameObjects.PlayerCharacter(
+            200, 200)
 
         # Set the title of the screen
         pygame.display.set_caption(self.title)
@@ -68,7 +67,7 @@ class Game:
 
     def run_game_loop(self):
         direction = 0
-        
+
         while not self.is_game_over:
             if self.player.breathing:
                 self.player.breath()
@@ -80,10 +79,12 @@ class Game:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_UP:
                         print("up")
-                        self.player.jump()
+                        # don't jump again if it's already jumping
+                        if not self.player.jumping == True:
+                            self.player.jump()
                     elif event.key == pygame.K_DOWN:
                         print("down")
-                    elif event.key ==  pygame.K_LEFT or event.key ==  pygame.K_RIGHT:
+                    elif event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                         print("left and right")
                 elif event.type == pygame.KEYUP:
                     if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
@@ -95,7 +96,7 @@ class Game:
             # self.player.move(direction, self.height)
 
             # Update all game graphics
-            self.pygame.display.update()
+            pygame.display.update()
             clock.tick(self.TICK_RATE)
 
         if self.did_win:
@@ -111,7 +112,7 @@ class Game:
 
 pygame.init()
 
-new_game = Game(os.path.join("imgs","background.png"), SCREEN_TITLE,
+new_game = Game(os.path.join("imgs", "background.png"), SCREEN_TITLE,
                 SCREEN_HEIGHT, SCREEN_WIDTH)
 new_game.run_game_loop()
 
