@@ -63,6 +63,7 @@ class PlayerCharacter(GameObject):
 
         self.load_breathing_animation()
         self.load_jump_animation()
+        self.load_walk_animation()
 
     def load_breathing_animation(self, ):
         self.breath_images = self.scale_images(
@@ -83,6 +84,14 @@ class PlayerCharacter(GameObject):
             self.sheet.load_strip(self.rect, 1, 2, 4, pygame.Color("white")))
         self.jump_iter = Animation(self.jump_images).iter()
 
+    def load_walk_animation(self, ):
+        self.walk_sound = pygame.mixer.Sound(os.path.join(
+            'sounds', 'Retro_8-Bit_Game-Run_Footsteps_01-Loop.wav'))
+        self.walking = False
+        self.walk_images = self.scale_images(
+            self.sheet.load_strip(self.rect, 3, 1, 4, pygame.Color("white")))
+        self.walk_iter = Animation(self.walk_images).iter(True)
+
     # This function will handle any play state changes that need to occur before
     #  the playert animation changes.
     def break_for_animation(self, ):
@@ -100,6 +109,17 @@ class PlayerCharacter(GameObject):
         # assumes character as already been positioned in idx 0 in __init__.
         #  Perhaps not good coupling of the two functions.
         self.sprite = self.breath_iter.next()
+
+    def walk(self, ):
+        if not self.walking:
+            self.walking = True
+            self.break_for_animation()
+        self.walk_sound.play()
+        self.sprite = self.walk_iter.next()
+
+    def stop_walk(self, ):
+        self.walking = False
+        self.reset_breathing_animation()
 
     def jump(self,):
         # assumes character as already been positioned in idx 0 in __init__.

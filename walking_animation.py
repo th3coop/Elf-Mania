@@ -34,7 +34,7 @@ class Game:
         self.game_screen = pygame.display.set_mode(
             (SCREEN_WIDTH, SCREEN_HEIGHT))
         self.theme_song = pygame.mixer.Sound(os.path.join(
-            'sounds', '8bit Stage1 Intro.wav'))
+            'sounds', 'Hypnotic NES.wav'))
         self.title = title
         self.width = width
         # Screen game screen
@@ -88,9 +88,13 @@ class Game:
                         print("down")
                     elif event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                         print("left and right")
+                        self.player.walk()
                 elif event.type == pygame.KEYUP:
                     if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                         direction = 0
+                    elif event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                        print("left and right")
+                        self.player.stop_walk()
                 elif event.type == pygame.QUIT:
                     self.is_game_over = True
             self.draw_screen()
