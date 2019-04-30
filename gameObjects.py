@@ -11,9 +11,8 @@ class GameObject:
 
         if use_sprite_sheet:
             self.sheet = Spritesheet(self.img_path)
-            self.sprite = None
         else:
-            self.sprite = self.load_sprite()
+            self.load_sprite()
             self.sheet = None
 
         self.scale_value = 2
@@ -28,7 +27,7 @@ class GameObject:
     def load_sprite(self, ):
         # Create sprite
         self.sprite = pygame.image.load(self.img_path).convert()
-        self.scale_img()
+        self.scale_image(self.sprite)
 
     def scale_image(self, image):
         rect = image.get_rect()
