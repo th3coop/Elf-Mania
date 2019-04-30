@@ -4,28 +4,19 @@ class StopIteration(Exception):
     pass
 
 
-class Animation():
-    # number of ticks to wait to iterate to next image
-    FRAME_DELAY = 10
+class Iter():
+    FRAME_DELAY = 0
 
-    def __init__(self, images):
-        self.images = images
-
-    #  Loop tells the iterator to keep cycling through
-    #  the animation rather than raising StopIteration exception
-    def iter(self, loop=False):
-        return Iter(self.images, loop)
-
-
-class Iter(Animation):
-    def __init__(self, images, loop):
+    def __init__(self, images, loop=False, frame_delay=5):
+        # number of ticks to wait to iterate to next image
+        self.FRAME_DELAY = frame_delay
+        self.frame = frame_delay
         self.idx = 0
         self.loop = loop
-        self.frame = self.FRAME_DELAY
         self.images = images
 
     def next(self, ):
-        if self.frame == 0:
+        if self.frame <= 0:
             self.frame = self.FRAME_DELAY
             self.idx += 1
         self.frame -= 1

@@ -1,7 +1,6 @@
 import pygame
 import os
-import numpy
-from animation import Animation, StopIteration
+from animation import Iter, StopIteration
 from spritesheet import Spritesheet
 
 
@@ -68,7 +67,7 @@ class PlayerCharacter(GameObject):
     def load_breathing_animation(self, ):
         self.breath_images = self.scale_images(
             self.sheet.load_strip(self.rect, 0, 1, 4, pygame.Color("white")))
-        self.breath_iter = Animation(self.breath_images).iter(True)
+        self.breath_iter = Iter(self.breath_images, True)
 
         self.sprite = self.breath_iter.next()
         # Place the sprite in it's starting position
@@ -82,15 +81,15 @@ class PlayerCharacter(GameObject):
         self.jumping = False
         self.jump_images = self.scale_images(
             self.sheet.load_strip(self.rect, 1, 2, 4, pygame.Color("white")))
-        self.jump_iter = Animation(self.jump_images).iter()
+        self.jump_iter = Iter(self.jump_images)
 
     def load_walk_animation(self, ):
         self.walk_sound = pygame.mixer.Sound(os.path.join(
-            'sounds', 'Retro_8-Bit_Game-Run_Footsteps_01-Loop.wav'))
+            'sounds', 'one-foot-step.wav'))
         self.walking = False
         self.walk_images = self.scale_images(
             self.sheet.load_strip(self.rect, 3, 1, 4, pygame.Color("white")))
-        self.walk_iter = Animation(self.walk_images).iter(True)
+        self.walk_iter = Iter(self.walk_images, True)
 
     # This function will handle any play state changes that need to occur before
     #  the playert animation changes.
