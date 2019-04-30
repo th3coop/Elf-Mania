@@ -77,25 +77,36 @@ class Game:
             if self.player.jumping == True:
                 self.player.jump()
             # Create the event loop
+            keys = pygame.key.get_pressed()  # checking pressed keys
+            if keys[pygame.K_UP]:
+                print("up")
+                # don't jump again if it's already jumping
+                if not self.player.jumping == True:
+                    self.player.jump()
+            if keys[pygame.K_DOWN]:
+                print("down")
+            if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]:
+                print("left and right")
+                self.player.walk()
             for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_UP:
-                        print("up")
-                        # don't jump again if it's already jumping
-                        if not self.player.jumping == True:
-                            self.player.jump()
-                    elif event.key == pygame.K_DOWN:
-                        print("down")
-                    elif event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                        print("left and right")
-                        self.player.walk()
-                elif event.type == pygame.KEYUP:
-                    if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
-                        direction = 0
-                    elif event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                        print("left and right")
-                        self.player.stop_walk()
-                elif event.type == pygame.QUIT:
+                # if event.type == pygame.KEYDOWN:
+                #     if event.key == pygame.K_UP:
+                #         print("up")
+                #         # don't jump again if it's already jumping
+                #         if not self.player.jumping == True:
+                #             self.player.jump()
+                #     elif event.key == pygame.K_DOWN:
+                #         print("down")
+                #     elif event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                #         print("left and right")
+                #         self.player.walk()
+                # elif event.type == pygame.KEYUP:
+                #     if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+                #         direction = 0
+                #     elif event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                #         print("left and right")
+                #         self.player.stop_walk()
+                if event.type == pygame.QUIT:
                     self.is_game_over = True
             self.draw_screen()
             # move the self.player
