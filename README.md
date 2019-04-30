@@ -28,5 +28,5 @@ Pygame playground pour moi, et toi.
  - `where pip`
 - if it's not using it...well, i'm not sure why the activation step wouldn't have worked for you but...get digging.  Feel free to let me know if you found an issue and i'll update this for the usecase you hit.
 - `pip install -r requirements.txt`
-- `python walking_animation.py`
+- `python elf.py`
 
