@@ -4,7 +4,7 @@ import pygame
 
 class Spritesheet(object):
     def __init__(self, filename):
-        self.sheet = pygame.image.load(filename).convert()
+        self.sheet = pygame.image.load(filename).convert_alpha()
 
     def get_sprite(self, rectangle, colorkey=None):
         """
@@ -17,9 +17,10 @@ class Spritesheet(object):
             passing in -1 will get colour from top left corner
         """
         rect = pygame.Rect(rectangle)
-        image = pygame.Surface(rect.size).convert()
+        image = pygame.Surface(rect.size).convert_alpha()
         image.blit(self.sheet, (0, 0), rect)
         if colorkey is not None:
+            print("We are using colorkey")
             if colorkey is -1:
                 colorkey = image.get_at((0, 0))
             if not isinstance(colorkey, pygame.Color):

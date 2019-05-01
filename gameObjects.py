@@ -21,12 +21,12 @@ class GameObject:
         # self.right_buffer = (20 + self.width)
 
         self.pre_offset_pos = (x, y)
-        self.x_pos = 100
-        self.y_pos = 100  # max(y, self.btm_buffer)
+        self.x_pos = x
+        self.y_pos = y  # max(y, self.btm_buffer)
 
     def load_sprite(self, ):
         # Create sprite
-        self.sprite = pygame.image.load(self.img_path).convert()
+        self.sprite = pygame.image.load(self.img_path).convert_alpha()
         self.scale_image(self.sprite)
 
     def scale_image(self, image):
@@ -37,8 +37,8 @@ class GameObject:
     def scale_images(self, images):
         return [self.scale_image(img) for img in images]
 
-    def draw(self, background):
-        background.blit(self.sprite, (self.x_pos, self.y_pos))
+    def draw(self, screen):
+        screen.blit(self.sprite, (self.x_pos, self.y_pos))
 
 
 class PlayerCharacter(GameObject):
@@ -65,12 +65,10 @@ class PlayerCharacter(GameObject):
 
     def load_breathing_animation(self, ):
         self.breath_images = self.scale_images(
-            self.sheet.load_strip(self.rect, 0, 1, 4, pygame.Color("white")))
+            self.sheet.load_strip(self.rect, 0, 1, 4))
         self.breath_iter = Iter(self.breath_images, True)
 
         self.sprite = self.breath_iter.next()
-        # Place the sprite in it's starting position
-        self.pos = self.sprite.get_rect().move(0, 100)
         self.breathing = True
 
     def load_jump_animation(self, ):
@@ -79,7 +77,7 @@ class PlayerCharacter(GameObject):
         self.jump_idx = 0
         self.jumping = False
         self.jump_images = self.scale_images(
-            self.sheet.load_strip(self.rect, 1, 2, 4, pygame.Color("white")))
+            self.sheet.load_strip(self.rect, 1, 2, 4))
         self.jump_iter = Iter(self.jump_images)
 
     def load_walk_animation(self, ):
@@ -87,7 +85,7 @@ class PlayerCharacter(GameObject):
             'sounds', 'one-foot-step.wav'))
         self.walking = False
         self.walk_images = self.scale_images(
-            self.sheet.load_strip(self.rect, 3, 1, 4, pygame.Color("white")))
+            self.sheet.load_strip(self.rect, 3, 1, 4))
         self.walk_iter = Iter(self.walk_images, True)
 
     # This function will handle any play state changes that need to occur before
