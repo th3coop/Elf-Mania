@@ -98,9 +98,6 @@ class PlayerCharacter(GameObject):
         self.breathing = True
         self.sprite = self.breath_iter.next()
 
-    def move(self, direction, speed):
-        pass
-
     def breath(self, ):
         # assumes character as already been positioned in idx 0 in __init__.
         #  Perhaps not good coupling of the two functions.
@@ -136,37 +133,16 @@ class PlayerCharacter(GameObject):
     def move(self, direction, max_height):
         # Y increase as you go down so to move UP on the
         # screen you must decrement Y
-        if direction > 0:
-            self.y_pos -= self.SPEED
-        elif direction < 0:
-            self.y_pos += self.SPEED
-        if self.y_pos >= max_height - self.btm_buffer:
-            self.y_pos = max_height - self.btm_buffer
+        pass
 
     def collision_detected(self, other_body):
-        if (self.y_pos + self.height) < other_body.y_pos:
-            return False
-        elif self.y_pos > (other_body.y_pos + other_body.height):
-            return False
-        if self.x_pos > (other_body.x_pos + other_body.width):
-            return False
-        elif (self.x_pos + self.width) < other_body.x_pos:
-            return False
-        return True
-
-
-class EnemyCharacter(GameObject):
-    SPEED = 5
-
-    def __init__(self, x, y):
-        # How many spaces to move per move
-        super().__init__(x, y, os.path.join("imgs", "enemy.png"))
-
-    def move(self, screen_width, multiplier=1):
-        if self.x_pos <= 20:
-            self.SPEED = abs(self.SPEED)
-        if self.x_pos >= (screen_width - self.right_buffer):
-            self.SPEED = -abs(self.SPEED)
-        self.x_pos += self.SPEED
-
-    # def detect_colision(self)
+        pass
+        # if (self.y_pos + self.height) < other_body.y_pos:
+        #     return False
+        # elif self.y_pos > (other_body.y_pos + other_body.height):
+        #     return False
+        # if self.x_pos > (other_body.x_pos + other_body.width):
+        #     return False
+        # elif (self.x_pos + self.width) < other_body.x_pos:
+        #     return False
+        # return True
