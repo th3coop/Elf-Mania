@@ -13,8 +13,9 @@ root = tkinter.Tk()
 # not sure if these calls are high DPI friendly.
 OS_SCREEN_WIDTH = root.winfo_screenwidth()
 OS_SCREEN_HEIGHT = root.winfo_screenheight()
-# SCREEN_WIDTH =
-# SCREEN_HEIGHT =
+# not sure what i want to do here.  Full screen is maybe too big?
+# SCREEN_WIDTH = 1024
+# SCREEN_HEIGHT = 786
 SCREEN_TITLE = "CROSSY RPG"
 
 # Color vars, RGB
@@ -55,7 +56,7 @@ class Game:
 
     def load_background(self,):
         self.background_img = pygame.image.load(
-            os.path.join("imgs", "fantasy-2048-x-1536_full.png")).convert_alpha()
+            self.background_img_path).convert_alpha()
         self.background_rect = self.background_img.get_rect()
 
     def draw_background(self, ):
@@ -139,7 +140,7 @@ class Game:
 pygame.init()
 
 new_game = Game(os.path.join(
-    "imgs", "fantasy-2048-x-1536_full.png"), SCREEN_TITLE)
+    "imgs", "backgrounds", "fantasy-2048-x-1536_full.png"), SCREEN_TITLE)
 new_game.run_game_loop()
 
 
