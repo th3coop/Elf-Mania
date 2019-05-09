@@ -30,3 +30,11 @@ Pygame playground pour moi, et toi.
 - `pip install -r requirements.txt`
 - `python elf.py`
 
+## Workflow
+
+### Formatting
+- Use the `autopep8` formatter.  Ideally enable *format on save* in your editor using `autopep8`
+- and use the `pylint` syntax checker
+
+### Git
+- work in a branch so if you need to push to `origin` (back to github)  `master`.
