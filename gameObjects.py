@@ -1,5 +1,6 @@
 import pygame
 import os
+import time
 from animation import Iter, StopIteration
 from spritesheet import Spritesheet
 
@@ -15,14 +16,28 @@ class GameObject:
             self.load_sprite()
             self.sheet = None
 
+        self.initialize_movement_props()
+
         self.scale_value = 2
         # deal with these later when we start moving things...i think use Rects will eliminate the need for a buffer though
         # self.btm_buffer = (20 + self.height)
         # self.right_buffer = (20 + self.width)
 
         self.pre_offset_pos = (x, y)
-        self.x_pos = x
-        self.y_pos = y  # max(y, self.btm_buffer)
+        self.acceleration = 3
+        self.location = [x,y]
+        self.x_pos = self.location[0]
+        self.y_pos = self.location[1]# max(y, self.btm_buffer)
+        # [x_speed, y_speed]
+
+    def initialize_movement_props(self,):
+        self.left_move_start_time = 0
+        self.left_move_stop_time = 0 
+        self.left_moving_time = 0 
+
+        self.right_move_start_time = 0
+        self.right_move_stop_time = 0 
+        self.right_moving_time = 0 
 
     def load_sprite(self, ):
         # Create sprite
@@ -42,13 +57,12 @@ class GameObject:
 
 
 class PlayerCharacter(GameObject):
-    SPEED = 10
 
     def __init__(self, x, y, img_path=None):
         if img_path == None:
             img_path = os.path.join("animations", "ELF ANIMATIONS.png")
         super().__init__(x, y, img_path,)
-
+        self.max_speed = 100
         # These are specific to ELF ANIMATION.PNG
         self.sprite_width = 31
         self.sprite_height = 31
@@ -58,7 +72,6 @@ class PlayerCharacter(GameObject):
         # rect is the pygame.Rect dimension of individual sprites in your spritesheet
         #  defaults to top left corner of sheet
         self.rect = (0, 0, self.sprite_width, self.sprite_height)
-
         self.load_breathing_animation()
         self.load_jump_animation()
         self.load_walk_animation()
@@ -98,20 +111,51 @@ class PlayerCharacter(GameObject):
         self.breathing = True
         self.sprite = self.breath_iter.next()
 
-    def move(self, direction, speed):
-        pass
-
     def breath(self, ):
         # assumes character as already been positioned in idx 0 in __init__.
         #  Perhaps not good coupling of the two functions.
         self.sprite = self.breath_iter.next()
 
-    def walk(self, ):
-        if not self.walking:
-            self.walking = True
-            self.break_for_animation()
-        self.walk_sound.play()
-        self.sprite = self.walk_iter.next()
+    def _calc_direction_velocity(self, direction):
+        velocity = 0.0
+        # is accelerating
+        if not getattr(self, "%s_move_start_time"%(direction)) is 0:
+            t = time.time() - getattr(self, "%s_move_start_time"%(direction))
+            veloctiy = (t * self.acceleration) + getattr(self, "%s_velocity"%(direction))
+        # is stopping
+        if not getattr(self, "%s_move_stop_time"%(direction)) is 0 and getattr(self, "%s_velocity"%(direction)) > 0:
+            t = time.time() - getattr(self, "%s_move_stop_time"%(direction))
+            veloctiy = (t * -(self.acceleration)) + getattr(self, "%s_velocity"%(direction))
+        return min(max(0, velocity), self.max_speed)
+
+    # Don't care which direction as we can only be accelerating
+    # in one direction so which ever one has a moving start time
+    # that's the time we want
+    def get_moving_direction_time(self):
+        return max(time.time() - self.left_move_start_time, time.time() - self.right_move_start_time,)
+
+    def calculate_location(self):
+        left_vel = self._calc_direction_velocity("left")
+        right_vel = self._calc_direction_velocity("right")
+        total_velocity = right_vel - left_vel
+        return [total_velocity * self.get_moving_direction_time(), self.y_pos]
+
+    def _start_move(self, direction):
+        self.stop_direction("right")  if direction is "right" else self.stop_direction("left") 
+        setattr(self, "%s_move_start_time"%(direction), time.time())
+        
+    def stop_direction(self, direction):
+        setattr(self, "%s_move_start_time" %(direction), 0)
+        setattr(self, "%s_move_stop_time" %(direction), time.time())
+        
+    def walk(self, direction):
+        self.stop_direction(direction)
+        self.location = self.calculate_location()
+        # if not self.walking:
+        #     self.walking = True
+        #     self.break_for_animation()
+        # self.walk_sound.play()
+        # self.sprite = self.walk_iter.next()
 
     def stop_walk(self, ):
         self.walking = False

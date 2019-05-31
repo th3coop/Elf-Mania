@@ -3,6 +3,7 @@
 # Set up the display
 
 import pygame
+from pygame import key
 import gameObjects
 import random
 import os
@@ -45,6 +46,8 @@ class Game:
         # Screen game screen
         self.player = gameObjects.PlayerCharacter(
             839, 215)
+        # Set how often held keys repeat their event; start after 10 ms, repeat after 10ms
+        key.set_repeat(10,10)
 
         # Set the title of the screen
         pygame.display.set_caption(self.title)
@@ -83,39 +86,36 @@ class Game:
         while not self.is_game_over:
             if self.player.breathing:
                 self.player.breath()
-
             if self.player.jumping == True:
                 self.player.jump()
             # Create the event loop
-            keys = pygame.key.get_pressed()  # checking pressed keys
-            if keys[pygame.K_UP]:
-                # don't jump again if it's already jumping
-                if not self.player.jumping == True:
-                    self.player.jump()
-            if keys[pygame.K_DOWN]:
-                pass  # squat()?
-            if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]:
-                self.player.walk()
+            keys = key.get_pressed()  # checking pressed keys
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE or event.key == pygame.K_q:
                         self.is_game_over = True
-                    # if event.key == pygame.K_UP:
-                #         print("up")
-                #         # don't jump again if it's already jumping
-                #         if not self.player.jumping == True:
-                #             self.player.jump()
-                #     elif event.key == pygame.K_DOWN:
-                #         print("down")
-                #     elif event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                #         print("left and right")
-                #         self.player.walk()
-                # elif event.type == pygame.KEYUP:
-                #     if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
-                #         direction = 0
-                #     elif event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                #         print("left and right")
-                #         self.player.stop_walk()
+                    if event.key == pygame.K_UP:
+                            print("up")
+                            # don't jump again if it's already jumping
+                            if not (self.player.jumping == True):
+                                self.player.jump()
+                    # What if it's up AND down?  powerjump? Don't limit yourself homie.
+                    # Be crazy.  Elfs are crazy.  Be an elf.
+                    elif event.key == pygame.K_DOWN:
+                        print("down")
+                    if event.key == pygame.K_LEFT:
+                        print("right")
+                        self.player.walk("left")
+                    elif event.key == pygame.K_RIGHT:
+                        print("right")
+                        self.player.walk("right")
+
+                elif event.type == pygame.KEYUP:
+                    if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+                        direction = 0
+                    elif event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                        print("left and right")
+                        self.player.stop_walk()
                 if event.type == pygame.QUIT:
                     self.is_game_over = True
             self.draw_screen()
