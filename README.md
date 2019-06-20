@@ -20,7 +20,7 @@ Pygame playground pour moi, et toi.
 
 technically optional, but highly recommended. if you don't want to use a virtual environemt, skip to the installing dependencies section below.
 
-- in the repe, `virtualenv env` # note that autoenv will try to start a non existant env... (on linux you may need to specify python 3.6 by running `python3.6 -m virtualenv env`)
+- in the repo, `virtualenv env` # note that autoenv will try to start a non existant env... (on linux you may need to specify python 3.6 by running `python3.6 -m virtualenv env`)
 
 *MAC*
  - `cd .. && cd [repo-name]` # This activates the virtual env or just `source env/bin/activate` in the repo
