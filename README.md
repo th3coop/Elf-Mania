@@ -3,16 +3,24 @@ Pygame playground pour moi, et toi.
 
 ## Requirements
 
- - Python 3
+ - Python 3 (Note, there are some issues with this project and Python 3.7 on _Linux_, but Python 3.6 works! When the instructions below specify the `python` command, if you're on Linux you may need to use `python3.6` instead.)
  - vitrualenv
+ - pip
 
 ## Nice to haves
  - autoenv * autoenv doesn't exist on Windows ¯\_(ツ)_/¯
 
-## Run
 
-- clone this repo
-- in the repe, `virtualenv env` # note that autoenv will try to start a non existant env...
+## Getting Started
+
+- clone this repo with `git clone https://github.com/th3coop/Elf-Mania.git`
+- `cd Elf-Mania`
+
+## Set up the Virtual environment
+
+technically optional, but highly recommended. if you don't want to use a virtual environemt, skip to the installing dependencies section below.
+
+- in the repo, `virtualenv env` # note that autoenv will try to start a non existant env... (on linux you may need to specify python 3.6 by running `python3.6 -m virtualenv env`)
 
 *MAC*
  - `cd .. && cd [repo-name]` # This activates the virtual env or just `source env/bin/activate` in the repo
@@ -21,13 +29,15 @@ Pygame playground pour moi, et toi.
  - `env\bin\activate.bat` #activates the virtual env
 - confirm that the virtual env activated by making sure it's using `pip` from your `env` folder
 
-*MAC*
- - `which pip`
- 
-*Windows*
- - `where pip`
-- if it's not using it...well, i'm not sure why the activation step wouldn't have worked for you but...get digging.  Feel free to let me know if you found an issue and i'll update this for the usecase you hit.
-- `pip install -r requirements.txt`
+*Linux* 
+- initialize / enter the virtual environment with `source env/bin/activate`
+
+## Installing Dependencies
+
+- `pip install -r requirements.txt` (again, on linux you may need to specify python 3.6 with `python3.6 -m pip install -r requirements.txt`)
+
+## Running 
+
 - `python elf.py`
 
 ## Workflow

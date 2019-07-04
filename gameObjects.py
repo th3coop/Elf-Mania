@@ -41,7 +41,7 @@ class GameObject:
 
     def load_sprite(self, ):
         # Create sprite
-        self.sprite = pygame.image.load(self.img_path).convert_alpha()
+        self.sprite = pygame.image.load(self.img_path)
         self.scale_image(self.sprite)
 
     def scale_image(self, image):
