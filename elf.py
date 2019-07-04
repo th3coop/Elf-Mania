@@ -15,9 +15,9 @@ root = tkinter.Tk()
 OS_SCREEN_WIDTH = root.winfo_screenwidth()
 OS_SCREEN_HEIGHT = root.winfo_screenheight()
 # not sure what i want to do here.  Full screen is maybe too big?
-# SCREEN_WIDTH = 1024
-# SCREEN_HEIGHT = 786
-SCREEN_TITLE = "CROSSY RPG"
+SCREEN_WIDTH = 400
+SCREEN_HEIGHT = 400
+SCREEN_TITLE = "ELF MANIA"
 
 # Color vars, RGB
 WHITE = (255, 255, 255)
@@ -47,7 +47,7 @@ class Game:
         self.player = gameObjects.PlayerCharacter(
             839, 215)
         # Set how often held keys repeat their event; start after 10 ms, repeat after 10ms
-        key.set_repeat(10,10)
+        key.set_repeat(10, 10)
 
         # Set the title of the screen
         pygame.display.set_caption(self.title)
@@ -81,7 +81,6 @@ class Game:
         pygame.display.flip()
 
     def run_game_loop(self):
-        direction = 0
         self.theme_song.play(loops=-1, fade_ms=100)
         while not self.is_game_over:
             if self.player.breathing:
@@ -95,27 +94,33 @@ class Game:
                     if event.key == pygame.K_ESCAPE or event.key == pygame.K_q:
                         self.is_game_over = True
                     if event.key == pygame.K_UP:
-                            print("up")
-                            # don't jump again if it's already jumping
-                            if not (self.player.jumping == True):
-                                self.player.jump()
+                        print("up")
+                        # don't jump again if it's already jumping
+                        if not (self.player.jumping == True):
+                            self.player.jump()
                     # What if it's up AND down?  powerjump? Don't limit yourself homie.
                     # Be crazy.  Elfs are crazy.  Be an elf.
                     elif event.key == pygame.K_DOWN:
                         print("down")
                     if event.key == pygame.K_LEFT:
-                        print("right")
+                        print("left")
                         self.player.walk("left")
+
                     elif event.key == pygame.K_RIGHT:
                         print("right")
                         self.player.walk("right")
 
                 elif event.type == pygame.KEYUP:
                     if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
-                        direction = 0
-                    elif event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                        print("left and right")
-                        self.player.stop_walk()
+                        # direction = 0
+                        pass
+                    elif event.key == pygame.K_LEFT:
+                        print("left")
+                        self.player.stop_walk("left")
+                    elif event.key == pygame.K_RIGHT:
+                        print("roight")
+                        self.player.stop_walk("right")
+
                 if event.type == pygame.QUIT:
                     self.is_game_over = True
             self.draw_screen()

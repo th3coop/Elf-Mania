@@ -3,6 +3,17 @@ import os
 import time
 from animation import Iter, StopIteration
 from spritesheet import Spritesheet
+from typing import Union
+
+# I want a proper union type for LEFT or RIGHT but I guess i'll
+# use this
+
+
+def _binary_direction(direction):
+    if direction == "left":
+        return "right"
+    else:
+        return "left"
 
 
 class GameObject:
@@ -24,20 +35,28 @@ class GameObject:
         # self.right_buffer = (20 + self.width)
 
         self.pre_offset_pos = (x, y)
-        self.acceleration = 3
-        self.location = [x,y]
-        self.x_pos = self.location[0]
-        self.y_pos = self.location[1]# max(y, self.btm_buffer)
+        self.acceleration = 500
+        self.location = [x, y]
+        self._set_xy(self.location)
+        # max(y, self.btm_buffer)
         # [x_speed, y_speed]
+
+    def _set_xy(self, location):
+        self.x_pos = location[0]
+        self.y_pos = location[1]
 
     def initialize_movement_props(self,):
         self.left_move_start_time = 0
-        self.left_move_stop_time = 0 
-        self.left_moving_time = 0 
+        self.left_move_stop_time = 0
+        self.left_moving_time = 0
+        self.left_velocity = 0
 
         self.right_move_start_time = 0
-        self.right_move_stop_time = 0 
-        self.right_moving_time = 0 
+        self.right_move_stop_time = 0
+        self.right_moving_time = 0
+        self.right_velocity = 0
+
+        self.last_move_time = 0
 
     def load_sprite(self, ):
         # Create sprite
@@ -62,7 +81,7 @@ class PlayerCharacter(GameObject):
         if img_path == None:
             img_path = os.path.join("animations", "ELF ANIMATIONS.png")
         super().__init__(x, y, img_path,)
-        self.max_speed = 100
+        self.max_speed = 1000
         # These are specific to ELF ANIMATION.PNG
         self.sprite_width = 31
         self.sprite_height = 31
@@ -119,45 +138,61 @@ class PlayerCharacter(GameObject):
     def _calc_direction_velocity(self, direction):
         velocity = 0.0
         # is accelerating
-        if not getattr(self, "%s_move_start_time"%(direction)) is 0:
-            t = time.time() - getattr(self, "%s_move_start_time"%(direction))
-            veloctiy = (t * self.acceleration) + getattr(self, "%s_velocity"%(direction))
+        if not getattr(self, "%s_move_start_time" % (direction)) is 0:
+            t = time.time() - getattr(self, "%s_move_start_time" % (direction))
+            velocity = (t * self.acceleration) + \
+                getattr(self, "%s_velocity" % (direction))
         # is stopping
-        if not getattr(self, "%s_move_stop_time"%(direction)) is 0 and getattr(self, "%s_velocity"%(direction)) > 0:
-            t = time.time() - getattr(self, "%s_move_stop_time"%(direction))
-            veloctiy = (t * -(self.acceleration)) + getattr(self, "%s_velocity"%(direction))
+        if not getattr(self, "%s_move_stop_time" % (direction)) is 0 and getattr(self, "%s_velocity" % (direction)) > 0:
+            t = time.time() - getattr(self, "%s_move_stop_time" % (direction))
+            velocity = (t * -(self.acceleration)) + \
+                getattr(self, "%s_velocity" % (direction))
         return min(max(0, velocity), self.max_speed)
 
     # Don't care which direction as we can only be accelerating
     # in one direction so which ever one has a moving start time
     # that's the time we want
     def get_moving_direction_time(self):
-        return max(time.time() - self.left_move_start_time, time.time() - self.right_move_start_time,)
+        t = time.time() - self.last_move_time
+        print("t: %s" % t)
+        return t
 
     def calculate_location(self):
         left_vel = self._calc_direction_velocity("left")
+        print("left_vel: %s" % left_vel)
         right_vel = self._calc_direction_velocity("right")
+        print("right_vel: %s" % right_vel)
         total_velocity = right_vel - left_vel
-        return [total_velocity * self.get_moving_direction_time(), self.y_pos]
+        print("total_velocity: %s" % total_velocity)
+        return [(total_velocity * self.get_moving_direction_time()) + self.x_pos, self.y_pos]
 
+    # Initialize the movebut don't do it twice
     def _start_move(self, direction):
-        self.stop_direction("right")  if direction is "right" else self.stop_direction("left") 
-        setattr(self, "%s_move_start_time"%(direction), time.time())
-        
-    def stop_direction(self, direction):
-        setattr(self, "%s_move_start_time" %(direction), 0)
-        setattr(self, "%s_move_stop_time" %(direction), time.time())
-        
+        if getattr(self, "%s_move_start_time" % direction) is 0:
+            self.last_move_time = time.time()
+            setattr(self, "%s_move_start_time" % (direction), time.time())
+            setattr(self, "%s_move_stop_time" % (direction), 0)
+
+    def _stop_direction(self, direction):
+        if getattr(self, "%s_move_stop_time" % direction) is 0:
+            setattr(self, "%s_move_start_time" % (direction), 0)
+            setattr(self, "%s_move_stop_time" % (direction), time.time())
+
     def walk(self, direction):
-        self.stop_direction(direction)
+        self._start_move(direction)
         self.location = self.calculate_location()
+        print("self.location: %s" % self.location)
+        self._set_xy(self.location)
+        self.last_move_time = time.time()
+        print("self.last_move_time: %s" % self.last_move_time)
         # if not self.walking:
         #     self.walking = True
         #     self.break_for_animation()
         # self.walk_sound.play()
         # self.sprite = self.walk_iter.next()
 
-    def stop_walk(self, ):
+    def stop_walk(self, direction):
+        self._stop_direction(direction)
         self.walking = False
         self.reset_breathing_animation()
 
