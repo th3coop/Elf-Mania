@@ -45,7 +45,8 @@ class Game:
         self.title = title
         # Screen game screen
         self.player = gameObjects.PlayerCharacter(
-            839, 215)
+            # 839, 215)
+            200, 200)  # easier for debugging
         # Set how often held keys repeat their event; start after 10 ms, repeat after 10ms
         key.set_repeat(10, 10)
 
@@ -54,8 +55,10 @@ class Game:
 
     def load_screen(self, ):
         # This set_mode must happen before anything graphical happens
-        self.game_screen = pygame.display.set_mode((0, 0),
-                                                   pygame.FULLSCREEN | pygame.RESIZABLE | pygame.NOFRAME)
+        self.game_screen = pygame.display.set_mode(  # easier for debugging
+            (SCREEN_WIDTH, SCREEN_HEIGHT))
+        # self.game_screen = pygame.display.set_mode((0, 0),
+        #                                            pygame.FULLSCREEN | pygame.RESIZABLE | pygame.NOFRAME)
 
     def load_background(self,):
         self.background_img = pygame.image.load(
@@ -85,8 +88,10 @@ class Game:
         while not self.is_game_over:
             if self.player.breathing:
                 self.player.breath()
-            if self.player.jumping == True:
+            if self.player.jumping:
                 self.player.jump()
+            if self.player.walking:
+                self.player.walk()
             # Create the event loop
             keys = key.get_pressed()  # checking pressed keys
             for event in pygame.event.get():
@@ -104,23 +109,19 @@ class Game:
                         print("down")
                     if event.key == pygame.K_LEFT:
                         print("left")
-                        self.player.walk("left")
-
+                        self.player.direction = -1
+                        self.player.start_move()
                     elif event.key == pygame.K_RIGHT:
                         print("right")
-                        self.player.walk("right")
+                        self.player.direction = 1
+                        self.player.start_move()
 
                 elif event.type == pygame.KEYUP:
                     if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
-                        # direction = 0
                         pass
-                    elif event.key == pygame.K_LEFT:
-                        print("left")
-                        self.player.stop_walk("left")
-                    elif event.key == pygame.K_RIGHT:
-                        print("roight")
-                        self.player.stop_walk("right")
-
+                    elif event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                        print("stop left")
+                        self.player.stop_move()
                 if event.type == pygame.QUIT:
                     self.is_game_over = True
             self.draw_screen()
