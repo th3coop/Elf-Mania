@@ -57,8 +57,8 @@ class Game:
         # This set_mode must happen before anything graphical happens
         self.game_screen = pygame.display.set_mode(  # easier for debugging
             (SCREEN_WIDTH, SCREEN_HEIGHT))
-        # self.game_screen = pygame.display.set_mode((0, 0),
-        #                                            pygame.FULLSCREEN | pygame.RESIZABLE | pygame.NOFRAME)
+        # self.game_screen = pygame.display.set_mode(
+        #     (0, 0), pygame.FULLSCREEN | pygame.RESIZABLE | pygame.NOFRAME)
 
     def load_background(self,):
         self.background_img = pygame.image.load(
@@ -120,7 +120,7 @@ class Game:
                     if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                         pass
                     elif event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                        print("stop left")
+                        print("stop left and right")
                         self.player.stop_move()
                 if event.type == pygame.QUIT:
                     self.is_game_over = True

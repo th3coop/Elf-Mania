@@ -122,7 +122,9 @@ class PlayerCharacter(GameObject):
         self.sprite = self.breath_iter.next()
 
     def _calc_velocity(self):
-        velocity = 0.0
+        # do all velocity calculations with positive numbers to keep it simple
+        # the "direction" modifier will convert it to `-` if needed
+        velocity = abs(self.velocity)
         if self.accelerating:
             print("Accellerating")
             t = time.time() - self.move_start_time
@@ -130,9 +132,11 @@ class PlayerCharacter(GameObject):
         else:
             print("Decelerating")
             t = time.time() - self.move_stopped_time
-            velocity = self.velocity - (t * self.deceleration)
+            velocity = velocity - (t * self.deceleration)
 
-        return min(max(0, velocity), self.max_speed)
+        #  don't be slower than 0 and don't be faster than max
+        velocity = min(max(0, velocity), self.max_speed)
+        return velocity * self.direction
 
     # Don't care which direction as we can only be accelerating
     # in one direction so which ever one has a moving start time
@@ -162,7 +166,7 @@ class PlayerCharacter(GameObject):
 
     def walk(self):
         print("walking")
-        self.velocity = self._calc_velocity() * self.direction
+        self.velocity = self._calc_velocity()
         print("self.velocity: %s" % self.velocity)
         self.location = self.calculate_location(self.velocity)
         print("self.location: %s" % self.location)
@@ -170,11 +174,6 @@ class PlayerCharacter(GameObject):
         self._set_xy(self.location)
         self.last_move_time = time.time()
         print("self.last_move_time: %s" % self.last_move_time)
-        # if not self.walking:
-        #     self.walking = True
-        #     self.break_for_animation()
-        # self.walk_sound.play()
-        # self.sprite = self.walk_iter.next()
         if self.velocity is 0:
             self.stop_walk()
 
