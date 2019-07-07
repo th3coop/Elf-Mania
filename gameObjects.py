@@ -166,8 +166,14 @@ class PlayerCharacter(GameObject):
             self.walking = True
             self.accelerating = True
 
-    # Initialize the stop but don't do it twice
-    def stop_move(self):
+
+<< << << < HEAD
+
+== == == =
+
+>>>>>> > Slight clean up.  nothing important
+   # Initialize the stop but don't do it twice
+   def stop_move(self):
         if self.move_stopped_time is 0:
             self.move_start_time = 0
             self.move_stopped_time = time.time()
