@@ -3,14 +3,12 @@ import os
 import time
 from animation import Iter, StopIteration
 from spritesheet import Spritesheet
-from typing import Union
 
 
 class GameObject:
 
     def __init__(self, x, y, img_path, use_sprite_sheet=True):
         self.img_path = img_path
-        self.moving = False
         if use_sprite_sheet:
             self.sheet = Spritesheet(self.img_path)
         else:
@@ -149,7 +147,7 @@ class PlayerCharacter(GameObject):
     def calculate_location(self, velocity):
         return [(self.velocity * self.get_moving_time()) + self.x_pos, self.y_pos]
 
-    # Initialize the movebut don't do it twice
+    # Initialize the move but don't do it twice
     def start_move(self):
         if self.move_start_time is 0:
             self.move_start_time = time.time()
@@ -157,7 +155,8 @@ class PlayerCharacter(GameObject):
             self.last_move_time = time.time()
             self.walking = True
             self.accelerating = True
-
+    
+    # Initialize the stop but don't do it twice
     def stop_move(self):
         if self.move_stopped_time is 0:
             self.move_start_time = 0
@@ -177,6 +176,7 @@ class PlayerCharacter(GameObject):
         if self.velocity is 0:
             self.stop_walk()
 
+    # completely stop the character
     def stop_walk(self,):
         self.direction = 0
         self.walking = False
