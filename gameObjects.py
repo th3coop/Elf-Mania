@@ -84,7 +84,7 @@ class PlayerCharacter(GameObject):
 
     def load_shooting_animation(self, ):
         self.shoot_sound = pygame.mixer.Sound(
-            os.path.join('sounds', 'Retro_8-Bit_Game-Alarm_Bell_01.wav'))
+            os.path.join('sounds', 'Shot08.wav'))
         self.shooting = False
         self.shooting_images = self.scale_images(
             self.sheet.load_strip(self.rect, 13, 1, 4)
