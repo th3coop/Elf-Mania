@@ -24,7 +24,7 @@ class GameObject:
 
         self.pre_offset_pos = (x, y)
         self.acceleration = 1000
-        self.deceleration = 100
+        self.deceleration = 1000
         self.location = [x, y]
         self._set_xy(self.location)
         # max(y, self.btm_buffer)
@@ -78,6 +78,16 @@ class PlayerCharacter(GameObject):
         self.load_breathing_animation()
         self.load_jump_animation()
         self.load_walk_animation()
+        self.load_shooting_animation()
+
+    def load_shooting_animation(self, ):
+        self.shoot_sound = pygame.mixer.Sound(
+            os.path.join('sounds', 'Retro_8-Bit_Game-Alarm_Bell_01.wav'))
+        self.shooting = False
+        self.shooting_images = self.scale_images(
+            self.sheet.load_strip(self.rect, 13, 1, 4)
+        )
+        self.shoot_iter = Iter(self.shooting_images, True)
 
     def load_breathing_animation(self, ):
         self.breath_images = self.scale_images(
@@ -155,7 +165,7 @@ class PlayerCharacter(GameObject):
             self.last_move_time = time.time()
             self.walking = True
             self.accelerating = True
-    
+
     # Initialize the stop but don't do it twice
     def stop_move(self):
         if self.move_stopped_time is 0:
@@ -175,6 +185,18 @@ class PlayerCharacter(GameObject):
         print("self.last_move_time: %s" % self.last_move_time)
         if self.velocity is 0:
             self.stop_walk()
+
+    def shoot(self):
+        print("shooting")
+        if not self.shooting:
+            self.shoot_sound.play()
+            self.break_for_animation()
+        self.shooting = True
+        try:
+            self.sprite = self.shoot_iter.next()
+        except StopIteration:
+            self.shooting = False
+            self.reset_breathing_animation()
 
     # completely stop the character
     def stop_walk(self,):
