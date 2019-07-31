@@ -55,10 +55,10 @@ class Game:
 
     def load_screen(self, ):
         # This set_mode must happen before anything graphical happens
-        # self.game_screen = pygame.display.set_mode(  # easier for debugging
-        #     (SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.game_screen = pygame.display.set_mode(
-            (0, 0), pygame.FULLSCREEN | pygame.RESIZABLE | pygame.NOFRAME)
+        self.game_screen = pygame.display.set_mode(  # easier for debugging
+            (SCREEN_WIDTH, SCREEN_HEIGHT))
+        # self.game_screen = pygame.display.set_mode(
+        #     (0, 0), pygame.FULLSCREEN | pygame.RESIZABLE | pygame.NOFRAME)
 
     def load_background(self,):
         self.background_img = pygame.image.load(
@@ -98,7 +98,7 @@ class Game:
             keys = key.get_pressed()  # checking pressed keys
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
-                    print("key pressed: %s", event.key)
+                    print("key pressed: %s" %event.key)
                     if event.key == pygame.K_ESCAPE or event.key == pygame.K_q:
                         self.is_game_over = True
                     if event.key == pygame.K_UP:
@@ -120,7 +120,8 @@ class Game:
                         self.player.start_move()
 
                     if event.key == pygame.K_LSHIFT:
-                        if not (self.player.shooting == True):
+                        # shooting animation is running, don't run it again.
+                        if not self.player.shooting:
                             self.player.shoot()
 
                 elif event.type == pygame.KEYUP:

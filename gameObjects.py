@@ -87,7 +87,7 @@ class PlayerCharacter(GameObject):
         self.shooting_images = self.scale_images(
             self.sheet.load_strip(self.rect, 13, 1, 4)
         )
-        self.shoot_iter = Iter(self.shooting_images, True)
+        self.shoot_iter = Iter(self.shooting_images)
 
     def load_breathing_animation(self, ):
         self.breath_images = self.scale_images(
@@ -191,7 +191,7 @@ class PlayerCharacter(GameObject):
         if not self.shooting:
             self.shoot_sound.play()
             self.break_for_animation()
-        self.shooting = True
+            self.shooting = True
         try:
             self.sprite = self.shoot_iter.next()
         except StopIteration:
