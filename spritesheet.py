@@ -33,6 +33,13 @@ class Spritesheet(object):
         "Loads multiple images, supply a list of coordinates"
         return [self.get_sprite(rect, colorkey) for rect in rects]
 
+    def load_single_sprite(self, rect, row, column, colorkey=None):
+        rect_adjusted = (rect[0] + (rect[2] * column),  # Left
+                         rect[1] + (rect[3] * row),  # Top
+                         rect[2],  # Width
+                         rect[3])  # Height
+        return self.get_sprite(rect_adjusted, colorkey)
+
     # Load a whole strip of images
     def load_strip(self, rect, start_row, rows, columns, colorkey=None):
         """
@@ -42,9 +49,9 @@ class Spritesheet(object):
         rects = []
         for row in range(0, rows):
             for column in range(0, columns):
-                newRect = (rect[0] + (rect[2] * column),
-                           rect[1] + (rect[3] * (row + start_row)),
-                           rect[2],
-                           rect[3])
+                newRect = (rect[0] + (rect[2] * column),  # Left
+                           rect[1] + (rect[3] * (row + start_row)),  # Top
+                           rect[2],  # Width
+                           rect[3])  # Height
                 rects.append(newRect)
         return self.get_sprites(rects, colorkey)

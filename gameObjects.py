@@ -7,9 +7,9 @@ from spritesheet import Spritesheet
 
 class GameObject:
 
-    def __init__(self, x, y, img_path, use_sprite_sheet=True):
+    def __init__(self, x, y, img_path, is_sprite_sheet=True):
         self.img_path = img_path
-        if use_sprite_sheet:
+        if is_sprite_sheet:
             self.sheet = Spritesheet(self.img_path)
         else:
             self.load_sprite()
