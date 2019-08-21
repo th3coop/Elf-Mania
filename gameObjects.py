@@ -186,6 +186,14 @@ class PlayerCharacter(GameObject):
         if self.velocity is 0:
             self.stop_walk()
 
+    def shoot_arrow(self):
+        print("shoot arrow")
+        arrow = GameObject(self.x_pos,
+                           self.y_pos,
+                           "",
+                           False,
+                           self.sheet.load_single_sprite(self.rect, 13, 5))
+
     def shoot(self):
         print("shooting")
         if not self.shooting:
