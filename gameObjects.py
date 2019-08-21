@@ -7,7 +7,13 @@ from spritesheet import Spritesheet
 
 class GameObject:
 
-    def __init__(self, x, y, img_path, is_sprite_sheet=True):
+    def __init__(self, x, y, img_path="", is_sprite_sheet=True, sprite=pygame.Surface()):
+        """
+        img_path = a path to an img...surprise!
+        is_sprite_sheet = means the image path is a sprite sheet.  Intialization doesn't really do anything...
+        sprite = pygame.Surface.  This is to set a sprite that you've already loaded.  
+          Ie. load a single image from a sprite sheet
+        """
         self.img_path = img_path
         if is_sprite_sheet:
             self.sheet = Spritesheet(self.img_path)
