@@ -8,8 +8,6 @@ from spritesheet import Spritesheet
 class GameObject:
 
     def __init__(self, x, y, img_path, use_sprite_sheet=True):
-        pygame.mixer.init(frequency=48000, size=-16,
-                          allowedchanges=pygame.AUDIO_ALLOW_FREQUENCY_CHANGE)
         self.img_path = img_path
         if use_sprite_sheet:
             self.sheet = Spritesheet(self.img_path)
