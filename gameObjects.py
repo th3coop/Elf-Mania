@@ -7,7 +7,7 @@ from spritesheet import Spritesheet
 
 class GameObject:
 
-    def __init__(self, x, y, img_path="", is_sprite_sheet=True, sprite=None):
+    def __init__(self, x, y, screen, img_path="", is_sprite_sheet=True, sprite=None):
         """
         img_path = a path to an img...surprise!
         is_sprite_sheet = means the image path is a sprite sheet.  Intialization doesn't really do anything...
@@ -17,7 +17,7 @@ class GameObject:
         if img_path is not "" and sprite is not None:
             raise Exception(
                 "You can't supply 'img_path' and 'sprite'.  Pick one")
-
+        self.screen = screen
         self.sprite = sprite
         self.img_path = img_path
         if self.img_path is not "":
@@ -66,16 +66,16 @@ class GameObject:
     def scale_images(self, images):
         return [self.scale_image(img) for img in images]
 
-    def draw(self, screen):
-        screen.blit(self.sprite, (self.x_pos, self.y_pos))
+    def draw(self):
+        self.screen.blit(self.sprite, (self.x_pos, self.y_pos))
 
 
 class PlayerCharacter(GameObject):
 
-    def __init__(self, x, y, img_path=None):
+    def __init__(self, x, y, screen, img_path=None):
         if img_path == None:
             img_path = os.path.join("animations", "ELF ANIMATIONS.png")
-        super().__init__(x, y, img_path,)
+        super().__init__(x, y, screen, img_path)
         self.max_speed = 1000
         self.direction = 0
         # These are specific to ELF ANIMATION.PNG

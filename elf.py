@@ -46,7 +46,7 @@ class Game:
         # Screen game screen
         self.player = gameObjects.PlayerCharacter(
             # 839, 215)
-            200, 200)  # easier for debugging
+            200, 200, self.game_screen)  # easier for debugging
         # Set how often held keys repeat their event; start after 10 ms, repeat after 10ms
         key.set_repeat(10, 10)
 
@@ -80,7 +80,7 @@ class Game:
         # Clear screen
         self.draw_background()
         # Draw their new pos
-        self.player.draw(self.game_screen)
+        self.player.draw()
         pygame.display.flip()
 
     def run_game_loop(self):
