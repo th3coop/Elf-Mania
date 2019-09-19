@@ -220,7 +220,6 @@ class PlayerCharacter(GameObject):
 
     # completely stop the character
     def stop_walk(self,):
-        self.direction = 0
         self.walking = False
         self.reset_breathing_animation()
 
