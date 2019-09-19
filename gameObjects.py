@@ -20,16 +20,17 @@ class GameObject:
         self.screen = screen
         self.sprite = sprite
         self.img_path = img_path
+        self.sheet = None
+        self.scale_value = 2
         if self.img_path is not "":
             if is_sprite_sheet:
                 self.sheet = Spritesheet(self.img_path)
-            else:
-                self.load_sprite()
-                self.sheet = None
+
+        if self.img_path or self.sprite:
+            self.load_sprite()
 
         self.initialize_movement_props()
 
-        self.scale_value = 2
         # deal with these later when we start moving things...i think use Rects will eliminate the need for a buffer though
         # self.btm_buffer = (20 + self.height)
         # self.right_buffer = (20 + self.width)
@@ -55,7 +56,8 @@ class GameObject:
 
     def load_sprite(self, ):
         # Create sprite
-        self.sprite = pygame.image.load(self.img_path)
+        if not self.sprite:
+            self.sprite = pygame.image.load(self.img_path)
         self.scale_image(self.sprite)
 
     def scale_image(self, image):
