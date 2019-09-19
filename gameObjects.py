@@ -14,12 +14,18 @@ class GameObject:
         sprite = pygame.Surface.  This is to set a sprite that you've already loaded.  
           Ie. load a single image from a sprite sheet
         """
+        if img_path is not "" and sprite is not None:
+            raise Exception(
+                "You can't supply 'img_path' and 'sprite'.  Pick one")
+
+        self.sprite = sprite
         self.img_path = img_path
-        if is_sprite_sheet:
-            self.sheet = Spritesheet(self.img_path)
-        else:
-            self.load_sprite()
-            self.sheet = None
+        if self.img_path is not "":
+            if is_sprite_sheet:
+                self.sheet = Spritesheet(self.img_path)
+            else:
+                self.load_sprite()
+                self.sheet = None
 
         self.initialize_movement_props()
 
