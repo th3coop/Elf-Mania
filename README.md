@@ -47,4 +47,4 @@ technically optional, but highly recommended. if you don't want to use a virtual
 - and use the `pylint` syntax checker
 
 ### Git
-- work in a branch so if you need to push to `origin` (back to github)  `master`.
+- work in a branch.  Everything should get a review.
