@@ -79,7 +79,7 @@ class PlayerCharacter(GameObject):
             img_path = os.path.join("animations", "ELF ANIMATIONS.png")
         super().__init__(x, y, screen, img_path)
         self.max_speed = 1000
-        self.direction = 0
+        self.direction = 1
         # These are specific to ELF ANIMATION.PNG
         self.sprite_width = 31
         self.sprite_height = 31
@@ -200,13 +200,23 @@ class PlayerCharacter(GameObject):
         if self.velocity is 0:
             self.stop_walk()
 
-    def shoot_arrow(self):
-        print("shoot arrow")
-        arrow = GameObject(self.x_pos,
-                           self.y_pos,
-                           "",
-                           False,
-                           self.sheet.load_single_sprite(self.rect, 13, 5))
+    def get_arrow(self):
+        print("get_arrow")
+        arrowSprite = self.sheet.load_single_sprite(self.rect, 2, 15)
+        screen = self.screen
+
+        class Arrow(GameObject):
+            def __init__(self, x, y, direction):
+                self.SPEED = 100
+                self.direction = direction
+                super().__init__(x, y, screen, sprite=arrowSprite)
+
+            def move(self):
+                self.x_pos += self.SPEED*self.direction
+                self.draw()
+                print("self.x_pos: %s" % self.x_pos)
+
+        return Arrow(self.x_pos, self.y_pos, self.direction)
 
     def shoot(self):
         print("shooting")
@@ -214,8 +224,13 @@ class PlayerCharacter(GameObject):
             self.shoot_sound.play()
             self.break_for_animation()
             self.shooting = True
+            # This should be held by the GAME itself.  Once the arrow leaves the player
+            # this playerObject should care about it any more
+            self.arrow = self.get_arrow()
+            self.draw()
         try:
             self.sprite = self.shoot_iter.next()
+            self.arrow.move()
         except StopIteration:
             self.shooting = False
             self.reset_breathing_animation()

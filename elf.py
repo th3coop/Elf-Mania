@@ -49,7 +49,7 @@ class Game:
             200, 200, self.game_screen)  # easier for debugging
         # Set how often held keys repeat their event; start after 10 ms, repeat after 10ms
         key.set_repeat(10, 10)
-
+        self.arrow = self.player.get_arrow()
         # Set the title of the screen
         pygame.display.set_caption(self.title)
 
@@ -98,7 +98,7 @@ class Game:
             keys = key.get_pressed()  # checking pressed keys
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
-                    print("key pressed: %s" %event.key)
+                    print("key pressed: %s" % event.key)
                     if event.key == pygame.K_ESCAPE or event.key == pygame.K_q:
                         self.is_game_over = True
                     if event.key == pygame.K_UP:
