@@ -1,6 +1,8 @@
 # Elf-Mania
 Pygame playground pour moi, et toi.
 
+https://github.com/th3coop/Elf-Mania/workflows/lint_python/badge.svg
+
 ## Requirements
 
  - Python 3 (Note, there are some issues with this project and Python 3.7 on _Linux_, but Python 3.6 works! When the instructions below specify the `python` command, if you're on Linux you may need to use `python3.6` instead.)
