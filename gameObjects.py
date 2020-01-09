@@ -10,11 +10,12 @@ class GameObject:
     def __init__(self, x, y, screen, img_path="", is_sprite_sheet=True, sprite=None):
         """
         img_path = a path to an img...surprise!
-        is_sprite_sheet = means the image path is a sprite sheet.  Intialization doesn't really do anything...
-        sprite = pygame.Surface.  This is to set a sprite that you've already loaded.  
+        is_sprite_sheet = means the image path is a sprite sheet.
+        Intialization doesn't really do anything...
+        sprite = pygame.Surface.  This is to set a sprite that you've already loaded.
           Ie. load a single image from a sprite sheet
         """
-        if img_path is not "" and sprite is not None:
+        if img_path != "" and sprite is not None:
             raise Exception(
                 "You can't supply 'img_path' and 'sprite'.  Pick one")
         self.screen = screen
@@ -22,7 +23,7 @@ class GameObject:
         self.img_path = img_path
         self.sheet = None
         self.scale_value = 2
-        if self.img_path is not "":
+        if self.img_path != "":
             if is_sprite_sheet:
                 self.sheet = Spritesheet(self.img_path)
 
