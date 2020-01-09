@@ -45,7 +45,7 @@ class Game:
         # Screen game screen
         self.player = gameObjects.PlayerCharacter(
             # 839, 215)
-            200, 200)  # easier for debugging
+            200, 200, self.game_screen) # easier for debugging
         # Set how often held keys repeat their events
         key.set_repeat(10, 10)  # start after 10ms and repeat after 10ms
 
