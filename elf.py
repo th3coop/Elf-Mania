@@ -92,7 +92,6 @@ class Game:
             if self.player.walking:
                 self.player.walk()
             # Create the event loop
-            # keys = key.get_pressed()  # checking pressed keys
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key in (pygame.K_ESCAPE, pygame.K_q):
