@@ -5,7 +5,6 @@
 import pygame
 from pygame import key
 import gameObjects
-import random
 import os
 import tkinter
 
@@ -46,9 +45,10 @@ class Game:
         # Screen game screen
         self.player = gameObjects.PlayerCharacter(
             # 839, 215)
-            200, 200, self.game_screen)  # easier for debugging
-        # Set how often held keys repeat their event; start after 10 ms, repeat after 10ms
-        key.set_repeat(10, 10)
+            200, 200)  # easier for debugging
+        # Set how often held keys repeat their events
+        key.set_repeat(10, 10)  # start after 10ms and repeat after 10ms
+
         self.arrow = self.player.get_arrow()
         # Set the title of the screen
         pygame.display.set_caption(self.title)
@@ -95,16 +95,15 @@ class Game:
             if self.player.shooting:
                 self.player.shoot()
             # Create the event loop
-            keys = key.get_pressed()  # checking pressed keys
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     print("key pressed: %s" % event.key)
-                    if event.key == pygame.K_ESCAPE or event.key == pygame.K_q:
+                    if event.key in (pygame.K_ESCAPE, pygame.K_q):
                         self.is_game_over = True
                     if event.key == pygame.K_UP:
                         print("up")
                         # don't jump again if it's already jumping
-                        if not (self.player.jumping == True):
+                        if not self.player.jumping:
                             self.player.jump()
                     # What if it's up AND down?  powerjump? Don't limit yourself homie.
                     # Be crazy.  Elfs are crazy.  Be an elf.
@@ -125,9 +124,9 @@ class Game:
                             self.player.shoot()
 
                 elif event.type == pygame.KEYUP:
-                    if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+                    if event.key in (pygame.K_UP, pygame.K_DOWN):
                         pass
-                    elif event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                    elif event.key in (pygame.K_LEFT, pygame.K_RIGHT):
                         print("stop left and right")
                         self.player.stop_move()
                 if event.type == pygame.QUIT:
@@ -156,7 +155,6 @@ pygame.init()
 new_game = Game(os.path.join(
     "imgs", "backgrounds", "fantasy-2048-x-1536_full.png"), SCREEN_TITLE)
 new_game.run_game_loop()
-
 
 pygame.quit()
 quit()

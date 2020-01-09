@@ -31,7 +31,8 @@ class GameObject:
 
         self.initialize_movement_props()
 
-        # deal with these later when we start moving things...i think use Rects will eliminate the need for a buffer though
+        # deal with these later when we start moving things...i think use Rects will
+        # eliminate the need for a buffer though
         # self.btm_buffer = (20 + self.height)
         # self.right_buffer = (20 + self.width)
 
@@ -75,16 +76,17 @@ class GameObject:
 class PlayerCharacter(GameObject):
 
     def __init__(self, x, y, screen, img_path=None):
-        if img_path == None:
-            img_path = os.path.join("animations", "ELF ANIMATIONS.png")
+        img_path = img_path or os.path.join("animations", "ELF ANIMATIONS.png")
         super().__init__(x, y, screen, img_path)
         self.max_speed = 1000
         self.direction = 1
         # These are specific to ELF ANIMATION.PNG
         self.sprite_width = 31
         self.sprite_height = 31
-        # top_padding apparent gap at top of file that is uneven with gaps between rows of images
-        # I could be setting sprite_[width/height] wrong but those should be even you'd think
+        # top_padding apparent gap at top of file that is uneven with gaps between rows
+        # of images
+        # I could be setting sprite_[width/height] wrong but those should be even you'd
+        # think
         self.top_padding = 4.5
         # rect is the pygame.Rect dimension of individual sprites in your spritesheet
         #  defaults to top left corner of sheet
@@ -173,7 +175,7 @@ class PlayerCharacter(GameObject):
 
     # Initialize the move but don't do it twice
     def start_move(self):
-        if self.move_start_time is 0:
+        if self.move_start_time == 0:
             self.move_start_time = time.time()
             self.move_stopped_time = 0
             self.last_move_time = time.time()
@@ -182,7 +184,7 @@ class PlayerCharacter(GameObject):
 
     # Initialize the stop but don't do it twice
     def stop_move(self):
-        if self.move_stopped_time is 0:
+        if self.move_stopped_time == 0:
             self.move_start_time = 0
             self.move_stopped_time = time.time()
             self.accelerating = False
@@ -197,7 +199,7 @@ class PlayerCharacter(GameObject):
         self._set_xy(self.location)
         self.last_move_time = time.time()
         print("self.last_move_time: %s" % self.last_move_time)
-        if self.velocity is 0:
+        if self.velocity == 0:
             self.stop_walk()
 
     def get_arrow(self):
