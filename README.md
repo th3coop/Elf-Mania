@@ -1,7 +1,7 @@
 # Elf-Mania
 Pygame playground pour moi, et toi.
 
-https://github.com/th3coop/Elf-Mania/workflows/lint_python/badge.svg
+![](https://github.com/th3coop/Elf-Mania/workflows/lint_python/badge.svg)
 
 ## Requirements
 
