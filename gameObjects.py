@@ -7,17 +7,31 @@ from spritesheet import Spritesheet
 
 class GameObject:
 
-    def __init__(self, x, y, img_path, use_sprite_sheet=True):
+    def __init__(self, x, y, screen, img_path="", is_sprite_sheet=True, sprite=None):
+        """
+        img_path = a path to an img...surprise!
+        is_sprite_sheet = means the image path is a sprite sheet.
+        Intialization doesn't really do anything...
+        sprite = pygame.Surface.  This is to set a sprite that you've already loaded.
+          Ie. load a single image from a sprite sheet
+        """
+        if img_path != "" and sprite is not None:
+            raise Exception(
+                "You can't supply 'img_path' and 'sprite'.  Pick one")
+        self.screen = screen
+        self.sprite = sprite
         self.img_path = img_path
-        if use_sprite_sheet:
-            self.sheet = Spritesheet(self.img_path)
-        else:
+        self.sheet = None
+        self.scale_value = 2
+        if self.img_path != "":
+            if is_sprite_sheet:
+                self.sheet = Spritesheet(self.img_path)
+
+        if self.img_path or self.sprite:
             self.load_sprite()
-            self.sheet = None
 
         self.initialize_movement_props()
 
-        self.scale_value = 2
         # deal with these later when we start moving things...i think use Rects will
         # eliminate the need for a buffer though
         # self.btm_buffer = (20 + self.height)
@@ -25,7 +39,7 @@ class GameObject:
 
         self.pre_offset_pos = (x, y)
         self.acceleration = 1000
-        self.deceleration = 100
+        self.deceleration = 1000
         self.location = [x, y]
         self._set_xy(self.location)
         # max(y, self.btm_buffer)
@@ -44,7 +58,8 @@ class GameObject:
 
     def load_sprite(self, ):
         # Create sprite
-        self.sprite = pygame.image.load(self.img_path)
+        if not self.sprite:
+            self.sprite = pygame.image.load(self.img_path)
         self.scale_image(self.sprite)
 
     def scale_image(self, image):
@@ -55,17 +70,17 @@ class GameObject:
     def scale_images(self, images):
         return [self.scale_image(img) for img in images]
 
-    def draw(self, screen):
-        screen.blit(self.sprite, (self.x_pos, self.y_pos))
+    def draw(self):
+        self.screen.blit(self.sprite, (self.x_pos, self.y_pos))
 
 
 class PlayerCharacter(GameObject):
 
-    def __init__(self, x, y, img_path=None):
+    def __init__(self, x, y, screen, img_path=None):
         img_path = img_path or os.path.join("animations", "ELF ANIMATIONS.png")
-        super().__init__(x, y, img_path,)
+        super().__init__(x, y, screen, img_path)
         self.max_speed = 1000
-        self.direction = 0
+        self.direction = 1
         # These are specific to ELF ANIMATION.PNG
         self.sprite_width = 31
         self.sprite_height = 31
@@ -80,6 +95,16 @@ class PlayerCharacter(GameObject):
         self.load_breathing_animation()
         self.load_jump_animation()
         self.load_walk_animation()
+        self.load_shooting_animation()
+
+    def load_shooting_animation(self, ):
+        self.shoot_sound = pygame.mixer.Sound(
+            os.path.join('sounds', 'Shot08.wav'))
+        self.shooting = False
+        self.shooting_images = self.scale_images(
+            self.sheet.load_strip(self.rect, 13, 1, 4)
+        )
+        self.shoot_iter = Iter(self.shooting_images)
 
     def load_breathing_animation(self, ):
         self.breath_images = self.scale_images(
@@ -178,9 +203,43 @@ class PlayerCharacter(GameObject):
         if self.velocity == 0:
             self.stop_walk()
 
+    def get_arrow(self):
+        print("get_arrow")
+        arrowSprite = self.sheet.load_single_sprite(self.rect, 2, 15)
+        screen = self.screen
+
+        class Arrow(GameObject):
+            def __init__(self, x, y, direction):
+                self.SPEED = 100
+                self.direction = direction
+                super().__init__(x, y, screen, sprite=arrowSprite)
+
+            def move(self):
+                self.x_pos += self.SPEED*self.direction
+                self.draw()
+                print("self.x_pos: %s" % self.x_pos)
+
+        return Arrow(self.x_pos, self.y_pos, self.direction)
+
+    def shoot(self):
+        print("shooting")
+        if not self.shooting:
+            self.shoot_sound.play()
+            self.break_for_animation()
+            self.shooting = True
+            # This should be held by the GAME itself.  Once the arrow leaves the player
+            # this playerObject should care about it any more
+            self.arrow = self.get_arrow()
+            self.draw()
+        try:
+            self.sprite = self.shoot_iter.next()
+            self.arrow.move()
+        except StopIteration:
+            self.shooting = False
+            self.reset_breathing_animation()
+
     # completely stop the character
     def stop_walk(self,):
-        self.direction = 0
         self.walking = False
         self.reset_breathing_animation()
 

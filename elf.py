@@ -45,10 +45,11 @@ class Game:
         # Screen game screen
         self.player = gameObjects.PlayerCharacter(
             # 839, 215)
-            200, 200)  # easier for debugging
+            200, 200, self.game_screen)  # easier for debugging
         # Set how often held keys repeat their events
         key.set_repeat(10, 10)  # start after 10ms and repeat after 10ms
 
+        self.arrow = self.player.get_arrow()
         # Set the title of the screen
         pygame.display.set_caption(self.title)
 
@@ -79,7 +80,7 @@ class Game:
         # Clear screen
         self.draw_background()
         # Draw their new pos
-        self.player.draw(self.game_screen)
+        self.player.draw()
         pygame.display.flip()
 
     def run_game_loop(self):
@@ -91,9 +92,12 @@ class Game:
                 self.player.jump()
             if self.player.walking:
                 self.player.walk()
+            if self.player.shooting:
+                self.player.shoot()
             # Create the event loop
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
+                    print("key pressed: %s" % event.key)
                     if event.key in (pygame.K_ESCAPE, pygame.K_q):
                         self.is_game_over = True
                     if event.key == pygame.K_UP:
@@ -113,6 +117,11 @@ class Game:
                         print("right")
                         self.player.direction = 1
                         self.player.start_move()
+
+                    if event.key == pygame.K_LSHIFT:
+                        # shooting animation is running, don't run it again.
+                        if not self.player.shooting:
+                            self.player.shoot()
 
                 elif event.type == pygame.KEYUP:
                     if event.key in (pygame.K_UP, pygame.K_DOWN):
