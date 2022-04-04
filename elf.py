@@ -1,12 +1,11 @@
-# Pygame development 1
-# Start the basic game set uo
-# Set up the display
+import os
+import tkinter
+from pathlib import Path
 
 import pygame
 from pygame import key
+
 import gameObjects
-import os
-import tkinter
 
 # Window Options
 root = tkinter.Tk()
@@ -14,7 +13,7 @@ root = tkinter.Tk()
 OS_SCREEN_WIDTH = root.winfo_screenwidth()
 OS_SCREEN_HEIGHT = root.winfo_screenheight()
 # not sure what i want to do here.  Full screen is maybe too big?
-SCREEN_WIDTH = 400
+SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 400
 SCREEN_TITLE = "ELF MANIA"
 
@@ -31,11 +30,12 @@ font = pygame.font.SysFont("courier", 30)
 
 class Game:
 
-    TICK_RATE = 60
-    is_game_over = False
-    did_win = False
+    TICK_RATE: int = 60
+    is_game_over: bool = False
+    did_win: bool = False
+    round: int
 
-    def __init__(self, background_img_path, title):
+    def __init__(self, background_img_path: Path, title: str):
         self.background_img_path = background_img_path
         self.load_screen()
         self.load_background()
@@ -68,7 +68,7 @@ class Game:
         self.game_screen.fill(WHITE)
         self.game_screen.blit(self.background_img, (0, 0))
 
-    def show_msg(self, txt, duration=1):
+    def show_msg(self, txt: str, duration: int = 1):
         text = font.render(txt, False, RED, BLACK)
         self.game_screen.blit(text, (300, 350))
         pygame.display.update()
@@ -101,25 +101,25 @@ class Game:
                         # don't jump again if it's already jumping
                         if not self.player.jumping:
                             self.player.jump()
-                    # What if it's up AND down?  powerjump? Don't limit yourself homie.
-                    # Be crazy.  Elfs are crazy.  Be an elf.
+                    # What if it's up AND down?  powerjump? Don't limit yourself
+                    # homie. Be crazy.  Elfs are crazy.  Be an elf.
                     elif event.key == pygame.K_DOWN:
                         print("down")
                     if event.key == pygame.K_LEFT:
                         print("left")
                         self.player.direction = -1
-                        self.player.start_move()
+                        self.player.startMove()
                     elif event.key == pygame.K_RIGHT:
                         print("right")
                         self.player.direction = 1
-                        self.player.start_move()
+                        self.player.startMove()
 
                 elif event.type == pygame.KEYUP:
                     if event.key in (pygame.K_UP, pygame.K_DOWN):
                         pass
                     elif event.key in (pygame.K_LEFT, pygame.K_RIGHT):
                         print("stop left and right")
-                        self.player.stop_move()
+                        self.player.stopMove()
                 if event.type == pygame.QUIT:
                     self.is_game_over = True
             self.draw_screen()
@@ -143,8 +143,8 @@ class Game:
 
 pygame.init()
 
-new_game = Game(os.path.join(
-    "imgs", "backgrounds", "fantasy-2048-x-1536_full.png"), SCREEN_TITLE)
+new_game = Game(Path(os.path.join(
+    "imgs", "backgrounds", "fantasy-2048-x-1536_full.png")), SCREEN_TITLE)
 new_game.run_game_loop()
 
 pygame.quit()
