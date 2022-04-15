@@ -3,9 +3,8 @@ import tkinter
 from pathlib import Path
 
 import pygame
-from pygame import key
 
-import gameObjects
+import player
 
 # Window Options
 root = tkinter.Tk()
@@ -36,6 +35,7 @@ class Game:
     round: int
 
     def __init__(self, background_img_path: Path, title: str):
+        pygame.init()
         self.background_img_path = background_img_path
         self.load_screen()
         self.load_background()
@@ -43,11 +43,11 @@ class Game:
             'sounds', 'Hypnotic NES.wav'))
         self.title = title
         # Screen game screen
-        self.player = gameObjects.PlayerCharacter(
+        self.player = player.PlayerCharacter(
             # 839, 215)
             200, 200)  # easier for debugging
         # Set how often held keys repeat their events
-        key.set_repeat(10, 10)  # start after 10ms and repeat after 10ms
+        pygame.key.set_repeat(10, 10)  # start after 10ms and repeat after 10ms
 
         # Set the title of the screen
         pygame.display.set_caption(self.title)
@@ -141,11 +141,9 @@ class Game:
             return
 
 
-pygame.init()
-
-new_game = Game(Path(os.path.join(
-    "imgs", "backgrounds", "fantasy-2048-x-1536_full.png")), SCREEN_TITLE)
-new_game.run_game_loop()
-
-pygame.quit()
-quit()
+if __name__ == '__main__':
+    new_game = Game(Path(os.path.join(
+        "imgs", "backgrounds", "fantasy-2048-x-1536_full.png")), SCREEN_TITLE)
+    new_game.run_game_loop()
+    pygame.quit()
+    quit()

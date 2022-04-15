@@ -4,7 +4,7 @@ from typing import List, Optional, Tuple
 
 import pygame
 
-import elfTypes
+import lib.elfTypes as elfTypes
 
 
 class Spritesheet(object):
